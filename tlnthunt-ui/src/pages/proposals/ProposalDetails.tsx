@@ -41,7 +41,7 @@ const ProposalDetails = () => {
     <>
       <div className="flex flex-col lg:flex-row items-start lg:gap-5">
         <div className="lg:w-2/3 w-full">
-          <Card className="p-5 rounded-md mb-3 ld:mb-0">
+          <Card className="max-h-[83vh] min-h-[83vh] p-5 rounded-md mb-3 ld:mb-0 dark:bg-transparent overflow-scroll scrollbar-hide">
             <h1 className="lg:text-3xl md:text-xl text-primary text-lg mb-5">
               {proposal.project?.title}
             </h1>
@@ -51,7 +51,7 @@ const ProposalDetails = () => {
           </Card>
         </div>
         <div className="lg:w-1/3 w-full">
-          <Card className="flex flex-col p-5 gap-3">
+          <Card className="flex flex-col p-5 gap-3 dark:bg-transparent">
             <div className="flex flex-row justify-between items-center">
               <h1 className="flex gap-2 items-center">
                 <Tag className="h-4 w-4" /> Price

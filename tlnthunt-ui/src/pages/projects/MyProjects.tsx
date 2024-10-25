@@ -33,7 +33,7 @@ const MyProjects = () => {
           </Button>
         </Link>
       </div>
-      <div className="flex flex-col gap-2 overflow-scroll scrollbar-hide h-[70vh]">
+      <div className="max-h-[83vh] min-h-[83vh] flex flex-col gap-2 overflow-scroll scrollbar-hide">
         {projects.map((p) => (
           <>
             <ProjectCard project={p} />

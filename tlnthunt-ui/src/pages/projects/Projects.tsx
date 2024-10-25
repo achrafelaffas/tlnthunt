@@ -88,7 +88,7 @@ const Projects = () => {
       </div>
       <div
         className={cn(
-          "flex flex-col gap-2 overflow-scroll scrollbar-hide h-[70vh]",
+          "max-h-[83vh] min-h-[83vh] flex flex-col gap-2 overflow-scroll scrollbar-hide",
           projects.length < 1 && "justify-center items-center"
         )}
       >
