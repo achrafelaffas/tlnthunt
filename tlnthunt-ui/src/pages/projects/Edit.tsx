@@ -29,7 +29,6 @@ import {
 } from "@/api";
 import { useNavigate, useParams } from "react-router-dom";
 import useApi from "@/hooks/useApi";
-import { useCurrentEditor } from "@tiptap/react";
 
 const EditProject = () => {
   const api = useApi();
