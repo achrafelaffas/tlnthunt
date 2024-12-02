@@ -16,10 +16,11 @@ import java.util.List;
 public class ProjectController {
 
     private final ProjectService service;
+    private final ProjectService projectService;
 
     @GetMapping
-    public ResponseEntity<List<ProjectResponse>> getAllProjects() {
-        return ResponseEntity.ok(service.getAllProjects());
+    public ResponseEntity<List<ProjectResponse>> getAllProjects(Authentication auth) {
+        return ResponseEntity.ok(service.getAllProjects(auth));
     }
 
     @GetMapping("/projects-by-user")
@@ -28,8 +29,11 @@ public class ProjectController {
     }
 
     @GetMapping("/projects-by-category/{id}")
-    public ResponseEntity<List<ProjectResponse>> getAllProjectsByCategory(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getAllProjectsByCategory(id));
+    public ResponseEntity<List<ProjectResponse>> getAllProjectsByCategory(
+            @PathVariable Long id,
+            Authentication auth
+    ) {
+        return ResponseEntity.ok(service.getAllProjectsByCategory(id, auth));
     }
 
     @GetMapping("{id}")
@@ -47,7 +51,16 @@ public class ProjectController {
     }
 
     @GetMapping("/search/{keyword}")
-    public ResponseEntity<List<ProjectResponse>> searchProjects(@PathVariable String keyword) {
-        return ResponseEntity.ok(service.searchProjects(keyword));
+    public ResponseEntity<List<ProjectResponse>> searchProjects(
+            @PathVariable String keyword,
+            Authentication auth
+    ) {
+        return ResponseEntity.ok(service.searchProjects(keyword, auth));
+    }
+
+    @GetMapping("/add-view/{id}")
+    public ResponseEntity<Void> addProjectView(@PathVariable("id") Long id) {
+        projectService.projectViews(id);
+        return ResponseEntity.status(201).build();
     }
 }

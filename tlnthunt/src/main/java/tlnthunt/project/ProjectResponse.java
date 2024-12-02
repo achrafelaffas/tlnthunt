@@ -10,9 +10,11 @@ public record ProjectResponse(
         String title,
         String description,
         double price,
+        long views,
         LocalDateTime posted,
         Level level,
         Period period,
-        UserResponse customer
+        UserResponse customer,
+        Long categoryId
 ) {
 }

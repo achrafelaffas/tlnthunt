@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static tlnthunt.auth.Role.FREELANCER;
-import static tlnthunt.email.EmailTemplateName.*;
+
 
 @Service
 @RequiredArgsConstructor
@@ -59,7 +59,6 @@ public class AuthenticationService {
         emailService.sendActivationEmail(
                 user.getEmail(),
                 user.getFullName(),
-                ACTIVATION_EMAIL,
                 newToken,
                 "Activate your account"
         );

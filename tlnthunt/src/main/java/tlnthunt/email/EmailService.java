@@ -8,7 +8,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,13 +20,11 @@ import static org.springframework.mail.javamail.MimeMessageHelper.MULTIPART_MODE
 public class EmailService {
 
     private final JavaMailSender mailSender;
-    private final SpringTemplateEngine engine;
 
     @Async
     public void sendActivationEmail(
             String to,
             String username,
-            EmailTemplateName template,
             String confirmationCode,
             String subject
     ) throws MessagingException {
@@ -39,33 +36,28 @@ public class EmailService {
                 UTF_8.name()
         );
 
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("username", username);
-        properties.put("confirmation_code", confirmationCode);
+        String htmlContent = String.format(
+                "<html><body><p>Hi, %s!</p><p>Thank you for signing up with submate.</p><p>Your confirmation code is: <strong>%s</strong></p></body></html>",
+                username, confirmationCode
+        );
 
-        Context context = new Context();
-        context.setVariables(properties);
-
-        helper.setFrom("contact@tlnthunt.com");
+        helper.setFrom("achrafelaffas@gmail.com");
         helper.setTo(to);
         helper.setSubject(subject);
 
-        String emailTemplate = engine.process(template.name(), context);
-        helper.setText(emailTemplate, true);
+        helper.setText(htmlContent, true);
 
         mailSender.send(mimeMessage);
     }
 
 
     @Async
-    public void sendPropsalEmail(
+    public void sendProposalEmail(
             String to,
             String username,
             String projectName,
             String freelancerName,
-            String url,
-            String subject,
-            EmailTemplateName templateName
+            String subject
     ) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(
@@ -74,20 +66,21 @@ public class EmailService {
                 UTF_8.name()
         );
 
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("username", username);
-        properties.put("freelancer_name", freelancerName);
-        properties.put("url", url);
-        properties.put("project_name", projectName);
+        String htmlContent = String.format(
+                "<html><body>" + "<p>Hi, %s!</p>" +
+                        "<p>You just received a new proposal for the project %s sent to you by %s </p>" +
+                        "</p></body></html>",
+                username,
+                projectName,
+                freelancerName
+        );
 
-        Context context = new Context();
-        context.setVariables(properties);
-
-        helper.setFrom("contact@tlnthunt.com");
+        helper.setFrom("achrafelaffas@gmail.com");
         helper.setTo(to);
         helper.setSubject(subject);
-        String emailTemplate = engine.process(templateName.getName(), context);
-        helper.setText(emailTemplate, true);
+
+        helper.setText(htmlContent, true);
+
         mailSender.send(mimeMessage);
     }
 

@@ -1,35 +1,3 @@
 spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/tlnthunt?createDatabaseIfNotExist=true
-    username: root
-    password: 1341
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: false
-
-  mail:
-    host: sandbox.smtp.mailtrap.io
-    username: 5ecd82289a66cc
-    password: 513e9a950a8a9b
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-    port: 2525
-
-application:
-  security:
-    jwt:
-      secret: HELL23OHO719W3ARE3YO34UD3OI3NG278TH32SI3386GR2AET274AL4LGO34OD
-      expiration: 86400000
-
-server:
-  servlet:
-    context-path: /api/v1/
-
-springdoc:
-  default-produces-media-type: application/json
+  profiles:
+    active: prod

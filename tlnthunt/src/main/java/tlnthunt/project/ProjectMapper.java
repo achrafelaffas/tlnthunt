@@ -12,6 +12,7 @@ public class ProjectMapper {
                 p.getTitle(),
                 p.getDescription(),
                 p.getPrice(),
+                p.getViews(),
                 p.getCreatedDate(),
                 p.getLevel(),
                 p.getPeriod(),
@@ -19,7 +20,8 @@ public class ProjectMapper {
                         p.getCustomer().getId(),
                         p.getCustomer().getFullName(),
                         p.getCustomer().getEmail()
-                )
+                ),
+                p.getCategory().getId()
         );
     }
 

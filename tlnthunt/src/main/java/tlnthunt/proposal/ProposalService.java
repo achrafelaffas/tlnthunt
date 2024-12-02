@@ -6,13 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import tlnthunt.email.EmailService;
-import tlnthunt.email.EmailTemplateName;
 import tlnthunt.project.ProjectRepository;
 import tlnthunt.user.User;
 
 import java.util.List;
-
-import static tlnthunt.email.EmailTemplateName.PROPOSAL_NOTIFICATION_EMAIL;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +43,7 @@ public class ProposalService {
         User user = (User) auth.getPrincipal();
         proposal.setFreelancer(user);
         proposal.setCustomer(proposal.getProject().getCustomer());
-        sendPropsalEmail(proposalRepository.save(proposal));
+        sendProposalEmail(proposalRepository.save(proposal));
     }
 
     public void updateProposalStatus(ProposalStatus status, Long id) {
@@ -55,13 +52,12 @@ public class ProposalService {
         proposalRepository.save(proposal);
     }
 
-    public void sendPropsalEmail(Proposal p) throws MessagingException {
+    public void sendProposalEmail(Proposal p) throws MessagingException {
         String to = p.getCustomer().getEmail();
         String username = p.getCustomer().getFullName();
         String projectName = p.getProject().getTitle();
         String freelancerName = p.getFreelancer().getFullName();
-        String url = " http://localhost:5173/proposals/" + p.getId() + "/details";
         String subject = "You've just received a proposal from " + freelancerName;
-        emailService.sendPropsalEmail(to, username, projectName, freelancerName, url, subject, PROPOSAL_NOTIFICATION_EMAIL);
+        emailService.sendProposalEmail(to, username, projectName, freelancerName, subject);
     }
 }

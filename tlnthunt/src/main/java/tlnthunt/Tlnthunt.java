@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import tlnthunt.category.Category;
 import tlnthunt.category.CategoryRepository;
 import tlnthunt.role.Role;
@@ -17,6 +18,7 @@ import static tlnthunt.auth.Role.FREELANCER;
 @SpringBootApplication
 @EnableAsync
 @EnableJpaAuditing(auditorAwareRef = "auditor")
+@EnableScheduling
 public class Tlnthunt {
     public static void main(String[] args) {
         SpringApplication.run(Tlnthunt.class, args);
