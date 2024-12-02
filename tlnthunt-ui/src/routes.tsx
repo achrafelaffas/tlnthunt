@@ -14,6 +14,7 @@ import ProposalDetails from "./pages/proposals/ProposalDetails";
 import MyProjectDetails from "./pages/projects/MyProjectDetails";
 import EditProject from "./pages/projects/Edit";
 import Chat from "./pages/Chat/Chat";
+import Dashboard from "./Dashboard/Dashboard";
 
 export const router = createBrowserRouter([
   { path: "/register", element: <Register /> },
@@ -21,25 +22,92 @@ export const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
   {
     path: "/",
-    element: (
-      <RequireAuth fallbackPath="/login">
-        <Layout />
-      </RequireAuth>
-    ),
+    element: <Layout />,
     children: [
-      { path: "/projects", element: <Projects /> },
-      { path: "/projects/new", element: <New /> },
-      { path: "/projects/:id/details", element: <ProjectDetails /> },
+      { element: <Dashboard />, index: true },
+      {
+        path: "/projects",
+        element: (
+          <RequireAuth fallbackPath="/login">
+            <Projects />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/projects/new",
+        element: (
+          <RequireAuth fallbackPath="/login">
+            <New />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/projects/:id/details",
+        element: (
+          <RequireAuth fallbackPath="/login">
+            <ProjectDetails />
+          </RequireAuth>
+        ),
+      },
 
-      { path: "/my-projects", element: <MyProjects /> },
-      { path: "/my-projects/:id/details", element: <MyProjectDetails /> },
-      { path: "/my-projects/:id/edit", element: <EditProject /> },
+      {
+        path: "/my-projects",
+        element: (
+          <RequireAuth fallbackPath="/login">
+            <MyProjects />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/my-projects/:id/details",
+        element: (
+          <RequireAuth fallbackPath="/login">
+            <MyProjectDetails />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/my-projects/:id/edit",
+        element: (
+          <RequireAuth fallbackPath="/login">
+            <EditProject />
+          </RequireAuth>
+        ),
+      },
 
-      { path: "/proposals/:id/send", element: <SendProposal /> },
-      { path: "/proposals", element: <Proposals /> },
-      { path: "/proposals/:id/details", element: <ProposalDetails /> },
+      {
+        path: "/proposals/:id/send",
+        element: (
+          <RequireAuth fallbackPath="/login">
+            <SendProposal />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/proposals",
+        element: (
+          <RequireAuth fallbackPath="/login">
+            <Proposals />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/proposals/:id/details",
+        element: (
+          <RequireAuth fallbackPath="/login">
+            <ProposalDetails />
+          </RequireAuth>
+        ),
+      },
 
-      { path: "/video-call", element: <Chat /> },
+      {
+        path: "/video-call",
+        element: (
+          <RequireAuth fallbackPath="/login">
+            <Chat />
+          </RequireAuth>
+        ),
+      },
     ],
   },
 ]);
