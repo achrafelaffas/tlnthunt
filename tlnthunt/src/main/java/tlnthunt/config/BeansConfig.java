@@ -56,7 +56,7 @@ public class BeansConfig {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:5174","http://localhost:5173"));
+        config.setAllowedOrigins(List.of("http://localhost:5174", "http://localhost:5173", "https://tlnthunt.achrafelaffas.com"));
         config.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.ORIGIN,
