@@ -54,7 +54,7 @@ const Login = () => {
           },
         });
 
-        navigate("/", { replace: true });
+        navigate("/projects", { replace: true });
       },
       () => setError("Your email or password is incorrect")
     );
