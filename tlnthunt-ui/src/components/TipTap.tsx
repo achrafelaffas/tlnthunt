@@ -52,8 +52,8 @@ const MenuBar = () => {
   numberOfWords = editor.storage.characterCount.words();
 
   return (
-    <div className="w-full">
-      <div className="grid grid-cols-4 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 mb-2">
+    <div className="w-full md:w-1/2">
+      <div className="grid grid-cols-5 md:grid-cols-10 lg:grid-cols-12 mb-2">
         <Button
           variant="ghost"
           size="icon"

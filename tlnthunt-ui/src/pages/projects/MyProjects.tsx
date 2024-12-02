@@ -4,8 +4,8 @@ import useAuthConfig from "@/hooks/useAuthConfig";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import ProjectCard from "./ProjectCard";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
+import MyProjectCard from "./MyProjectCard";
 
 const MyProjects = () => {
   const config = useAuthConfig();
@@ -35,12 +35,12 @@ const MyProjects = () => {
       </div>
       <div className="max-h-[83vh] min-h-[83vh] flex flex-col gap-2 overflow-scroll scrollbar-hide">
         {projects.map((p) => (
-          <>
-            <ProjectCard project={p} />
+          <div key={p.id}>
+            <MyProjectCard project={p} />
             {projects[projects.length - 1] !== p && (
               <DropdownMenuSeparator className="my-0" />
             )}
-          </>
+          </div>
         ))}
       </div>
     </div>

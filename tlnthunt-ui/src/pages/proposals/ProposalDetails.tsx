@@ -4,6 +4,7 @@ import {
   ProposalResponseStatusEnum as Status,
 } from "@/api";
 import TiptapDisplay from "@/components/TipTapDisplay";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import useAuthConfig from "@/hooks/useAuthConfig";
@@ -21,6 +22,11 @@ const ProposalDetails = () => {
   const updateStatusToRefused = async () => {
     if (proposal.id)
       await proposalApi.updateProposalStatus(proposal.id, Status.Declined);
+  };
+
+  const updateStatusToAccepted = async () => {
+    if (proposal.id)
+      await proposalApi.updateProposalStatus(proposal.id, Status.Accepted);
   };
 
   const fetchProposalById = async (id: number) => {
@@ -42,6 +48,15 @@ const ProposalDetails = () => {
       <div className="flex flex-col lg:flex-row items-start lg:gap-5">
         <div className="lg:w-2/3 w-full">
           <Card className="max-h-[83vh] min-h-[83vh] p-5 rounded-md mb-3 ld:mb-0 dark:bg-transparent overflow-scroll scrollbar-hide">
+            <div className="mb-5">
+              {proposal.status == Status.Accepted && (
+                <Badge variant="default">Accepted</Badge>
+              )}
+              {proposal.status == Status.Declined && (
+                <Badge variant="destructive">Declined</Badge>
+              )}
+            </div>
+            
             <h1 className="lg:text-3xl md:text-xl text-primary text-lg mb-5">
               {proposal.project?.title}
             </h1>
@@ -87,17 +102,20 @@ const ProposalDetails = () => {
                 </h1>
               )}
             </div>
-            <div className="flex gap-3 w-full">
-              <Button className="w-1/2">Accept</Button>
-
-              <Button
-                className="w-1/2"
-                onClick={updateStatusToRefused}
-                variant="destructive"
-              >
-                Refuse
-              </Button>
-            </div>
+            {proposal.status == Status.Pending && (
+              <div className="flex gap-3 w-full">
+                <Button className="w-1/2" onClick={updateStatusToAccepted}>
+                  Accept
+                </Button>
+                <Button
+                  className="w-1/2"
+                  onClick={updateStatusToRefused}
+                  variant="destructive"
+                >
+                  Refuse
+                </Button>
+              </div>
+            )}
           </Card>
         </div>
       </div>

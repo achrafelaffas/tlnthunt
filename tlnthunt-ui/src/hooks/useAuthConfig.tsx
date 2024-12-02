@@ -5,6 +5,7 @@ const useAuthConfig = () => {
   const acccessToken = useAuthHeader();
   const config = new Configuration();
   config.accessToken = acccessToken ? acccessToken.replace("Bearer ", "") : "";
+  config.basePath = "https://tlnthunt-production.up.railway.app/api/v1";
   return config;
 };
 

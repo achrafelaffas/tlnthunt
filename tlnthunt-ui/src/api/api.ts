@@ -77,6 +77,80 @@ export interface CategoryDTO {
 /**
  * 
  * @export
+ * @interface Message
+ */
+export interface Message {
+    /**
+     * 
+     * @type {number}
+     * @memberof Message
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Message
+     */
+    'createdDate'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Message
+     */
+    'lastModifiedDate'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Message
+     */
+    'createdBy'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Message
+     */
+    'lastModifiedBy'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Message
+     */
+    'sender'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Message
+     */
+    'receiver'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Message
+     */
+    'content'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface MessageRequest
+ */
+export interface MessageRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof MessageRequest
+     */
+    'content'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof MessageRequest
+     */
+    'receiver'?: number;
+}
+/**
+ * 
+ * @export
  * @interface ProjectRequest
  */
 export interface ProjectRequest {
@@ -165,6 +239,12 @@ export interface ProjectResponse {
     'price'?: number;
     /**
      * 
+     * @type {number}
+     * @memberof ProjectResponse
+     */
+    'views'?: number;
+    /**
+     * 
      * @type {string}
      * @memberof ProjectResponse
      */
@@ -187,6 +267,12 @@ export interface ProjectResponse {
      * @memberof ProjectResponse
      */
     'customer'?: UserResponse;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProjectResponse
+     */
+    'categoryId'?: number;
 }
 
 export const ProjectResponseLevelEnum = {
@@ -812,11 +898,227 @@ export class CategoryApi extends BaseAPI {
 
 
 /**
+ * ChatApi - axios parameter creator
+ * @export
+ */
+export const ChatApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} otherUser 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getHistory: async (otherUser: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'otherUser' is not null or undefined
+            assertParamExists('getHistory', 'otherUser', otherUser)
+            const localVarPath = `/chat/history/{otherUser}`
+                .replace(`{${"otherUser"}}`, encodeURIComponent(String(otherUser)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {MessageRequest} messageRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        send: async (messageRequest: MessageRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'messageRequest' is not null or undefined
+            assertParamExists('send', 'messageRequest', messageRequest)
+            const localVarPath = `/chat/send`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(messageRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ChatApi - functional programming interface
+ * @export
+ */
+export const ChatApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ChatApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} otherUser 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getHistory(otherUser: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Message>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getHistory(otherUser, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ChatApi.getHistory']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {MessageRequest} messageRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async send(messageRequest: MessageRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.send(messageRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ChatApi.send']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ChatApi - factory interface
+ * @export
+ */
+export const ChatApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ChatApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {string} otherUser 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getHistory(otherUser: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<Message>> {
+            return localVarFp.getHistory(otherUser, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {MessageRequest} messageRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        send(messageRequest: MessageRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.send(messageRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ChatApi - object-oriented interface
+ * @export
+ * @class ChatApi
+ * @extends {BaseAPI}
+ */
+export class ChatApi extends BaseAPI {
+    /**
+     * 
+     * @param {string} otherUser 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ChatApi
+     */
+    public getHistory(otherUser: string, options?: RawAxiosRequestConfig) {
+        return ChatApiFp(this.configuration).getHistory(otherUser, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {MessageRequest} messageRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ChatApi
+     */
+    public send(messageRequest: MessageRequest, options?: RawAxiosRequestConfig) {
+        return ChatApiFp(this.configuration).send(messageRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * ProjectApi - axios parameter creator
  * @export
  */
 export const ProjectApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addProjectView: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('addProjectView', 'id', id)
+            const localVarPath = `/projects/add-view/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * 
          * @param {ProjectRequest} projectRequest 
@@ -1045,6 +1347,18 @@ export const ProjectApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async addProjectView(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addProjectView(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProjectApi.addProjectView']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {ProjectRequest} projectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1125,6 +1439,15 @@ export const ProjectApiFactory = function (configuration?: Configuration, basePa
     return {
         /**
          * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addProjectView(id: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.addProjectView(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {ProjectRequest} projectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1185,6 +1508,17 @@ export const ProjectApiFactory = function (configuration?: Configuration, basePa
  * @extends {BaseAPI}
  */
 export class ProjectApi extends BaseAPI {
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProjectApi
+     */
+    public addProjectView(id: number, options?: RawAxiosRequestConfig) {
+        return ProjectApiFp(this.configuration).addProjectView(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @param {ProjectRequest} projectRequest 

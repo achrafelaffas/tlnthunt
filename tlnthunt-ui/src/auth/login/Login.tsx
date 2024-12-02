@@ -115,7 +115,7 @@ const Login = () => {
                   disabled={form.formState.isSubmitting}
                 >
                   {form.formState.isSubmitting ? (
-                    <Spinner />
+                    <Spinner className="h-4 w-4 border-2" />
                   ) : (
                     "Login to your account"
                   )}

@@ -1,40 +1,52 @@
 import ProjectCard from "./ProjectCard";
-import useAuthConfig from "@/hooks/useAuthConfig";
 import { useEffect, useState } from "react";
-import { CategoryApi, CategoryDTO, ProjectApi, ProjectResponse } from "@/api";
+import { CategoryDTO, ProjectResponse } from "@/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { CornerDownLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import useApi from "@/hooks/useApi";
+import Loading from "@/components/Loading";
+import FecthError from "@/components/FecthError";
 
 interface SearchRequest {
   keyword: string;
 }
 
 const Projects = () => {
-  const config = useAuthConfig();
-  const projectApi = new ProjectApi(config);
-  const categoryApi = new CategoryApi(config);
+  const api = useApi();
   const [projects, setProjects] = useState<ProjectResponse[]>([]);
   const [categories, setCategories] = useState<CategoryDTO[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const fetchProject = async () => {
+    setLoading(true);
     try {
-      const response = await projectApi.getAllProjects();
+      const response = await api.projectApi.getAllProjects();
       setProjects(response.data);
-    } catch (error) {}
+    } catch (error) {
+      setError("Something happend while getting data! Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchProjectByCategory = async (id: number) => {
+    setLoading(true);
     try {
-      const response = await projectApi.getAllProjectsByCategory(id);
+      const response = await api.projectApi.getAllProjectsByCategory(id);
       setProjects(response.data);
-    } catch (error) {}
+    } catch (error) {
+      setError("Something happend while getting data! Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fecthCategories = async () => {
-    await categoryApi.getAllCategories().then(
+    await api.categoryApi.getAllCategories().then(
       (response) => setCategories(response.data),
       (error) => Error(error)
     );
@@ -43,16 +55,24 @@ const Projects = () => {
   const { register, handleSubmit } = useForm<SearchRequest>();
 
   const searchProjects = async ({ keyword }: SearchRequest) => {
-    await projectApi.searchProjects(keyword).then(
-      (response) => setProjects(response.data),
-      (error) => console.log(error)
-    );
+    setLoading(true);
+    await api.projectApi
+      .searchProjects(keyword)
+      .then(
+        (response) => setProjects(response.data),
+        (error) => console.log(error)
+      )
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
     fetchProject();
     fecthCategories();
   }, []);
+
+  if (loading) return <Loading />;
+
+  if (error) return <FecthError error={error} />;
 
   return (
     <div className="flex flex-col gap-3">
@@ -72,13 +92,13 @@ const Projects = () => {
           </div>
         </form>
         <div className="flex scrollbar-hide overflow-scroll w-full gap-2">
-          <Button variant="link" onClick={() => fetchProject()}>
+          <Button variant="default" onClick={() => fetchProject()}>
             All
           </Button>
           {categories.map((c) => (
             <Button
               key={c.id}
-              variant="link"
+              variant="default"
               onClick={() => fetchProjectByCategory(c.id!)}
             >
               {c.name}

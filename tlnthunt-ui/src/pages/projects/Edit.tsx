@@ -1,4 +1,4 @@
-import { CategoryApi, CategoryDTO, ProjectApi, ProjectRequest } from "@/api";
+import { CategoryDTO, ProjectRequest, ProjectResponse } from "@/api";
 import Tiptap from "@/components/TipTap";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
@@ -19,7 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import useAuthConfig from "@/hooks/useAuthConfig";
 import { projectRequestSchema } from "@/Validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -28,14 +27,15 @@ import {
   ProjectRequestLevelEnum as Level,
   ProjectRequestPeriodEnum as Period,
 } from "@/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import useApi from "@/hooks/useApi";
+import { useCurrentEditor } from "@tiptap/react";
 
-const NewProject = () => {
-  const config = useAuthConfig();
-  const projectApi = new ProjectApi(config);
-  const categoryApi = new CategoryApi(config);
+const EditProject = () => {
+  const api = useApi();
   const navigate = useNavigate();
-
+  const { id } = useParams();
+  const [project, setProject] = useState<ProjectResponse>({});
   const form = useForm<ProjectRequest>({
     resolver: zodResolver(projectRequestSchema),
     defaultValues: {
@@ -48,21 +48,35 @@ const NewProject = () => {
   });
 
   const [categories, setCategories] = useState<CategoryDTO[]>([]);
-
   const fetchCategories = async () => {
-    const categories = await categoryApi.getAllCategories().then(
+    const categories = await api.categoryApi.getAllCategories().then(
       (response) => response.data,
       (error) => console.log(error)
     );
     if (categories) setCategories(categories);
   };
 
+  const fecthProject = async (id: number) => {
+    await api.projectApi
+      .getProjectById(id)
+      .then((response) => {
+        const project = response.data;
+        setProject(project);
+      })
+      .catch((e) => console.log(e));
+  };
+
   useEffect(() => {
     fetchCategories();
-  }, []);
+    if (id) fecthProject(Number(id));
+  }, [id]);
+
+  useEffect(() => {
+    form.reset(project);
+  }, [project]);
 
   const submit = async (projectRequest: ProjectRequest) => {
-    await projectApi
+    await api.projectApi
       .createProject(projectRequest)
       .then(() => navigate("/my-projects"))
       .catch((e) => console.log(e));
@@ -71,9 +85,9 @@ const NewProject = () => {
   return (
     <div className="flex items-center justify-center">
       <Card className="p-7 w-full bg-transparent border-0">
-        <CardTitle className="mb-3">Post a new project</CardTitle>
+        <CardTitle className="mb-3">Edit your project</CardTitle>
         <CardDescription className="my-2">
-          Provide details about your project. Click post when you're done.
+          Update the details of your project. Click post when you're done.
         </CardDescription>
         <Form {...form}>
           <form
@@ -81,6 +95,7 @@ const NewProject = () => {
             className="w-full space-y-6"
           >
             <FormField
+              defaultValue={project.title}
               control={form.control}
               name="title"
               render={({ field }) => (
@@ -129,7 +144,10 @@ const NewProject = () => {
                   <FormItem className="md:w-1/2">
                     <FormLabel>Project category</FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={String(project.categoryId)}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Select a category" />
                         </SelectTrigger>
@@ -157,7 +175,10 @@ const NewProject = () => {
                   <FormItem className="md:w-1/2">
                     <FormLabel>Expertise Level</FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={project.level}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Select a category" />
                         </SelectTrigger>
@@ -181,6 +202,7 @@ const NewProject = () => {
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="period"
@@ -188,7 +210,10 @@ const NewProject = () => {
                   <FormItem className="md:w-1/2">
                     <FormLabel>Project Period</FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={project.period}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Select a category" />
                         </SelectTrigger>
@@ -215,28 +240,31 @@ const NewProject = () => {
             </div>
             <FormField
               control={form.control}
+              defaultValue={project.description}
               name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Card className="bg-transparent border-primary">
-                      <Tiptap
-                        description={field.value}
-                        onChange={field.onChange}
-                      />
-                    </Card>
-                  </FormControl>
-                  <FormDescription>
-                    Describe you project in details. Use the tools bar to apply
-                    styles to you text.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Card className="bg-transparent border-primary">
+                        <Tiptap
+                          description={field.value}
+                          onChange={field.onChange}
+                        />
+                      </Card>
+                    </FormControl>
+                    <FormDescription>
+                      Describe you project in details. Use the tools bar to
+                      apply styles to you text.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
             <Button type="submit" disabled={form.formState.isSubmitting}>
-              Post your project
+              Update project information
             </Button>
           </form>
         </Form>
@@ -245,4 +273,4 @@ const NewProject = () => {
   );
 };
 
-export default NewProject;
+export default EditProject;

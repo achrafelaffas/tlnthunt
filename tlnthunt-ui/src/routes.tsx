@@ -11,6 +11,9 @@ import SendProposal from "./pages/proposals/SendProposal";
 import MyProjects from "./pages/projects/MyProjects";
 import Proposals from "./pages/proposals/Proposals";
 import ProposalDetails from "./pages/proposals/ProposalDetails";
+import MyProjectDetails from "./pages/projects/MyProjectDetails";
+import EditProject from "./pages/projects/Edit";
+import Chat from "./pages/Chat/Chat";
 
 export const router = createBrowserRouter([
   { path: "/register", element: <Register /> },
@@ -26,11 +29,17 @@ export const router = createBrowserRouter([
     children: [
       { path: "/projects", element: <Projects /> },
       { path: "/projects/new", element: <New /> },
-      { path: "/my-projects", element: <MyProjects /> },
       { path: "/projects/:id/details", element: <ProjectDetails /> },
+
+      { path: "/my-projects", element: <MyProjects /> },
+      { path: "/my-projects/:id/details", element: <MyProjectDetails /> },
+      { path: "/my-projects/:id/edit", element: <EditProject /> },
+
       { path: "/proposals/:id/send", element: <SendProposal /> },
       { path: "/proposals", element: <Proposals /> },
       { path: "/proposals/:id/details", element: <ProposalDetails /> },
+
+      { path: "/video-call", element: <Chat /> },
     ],
   },
 ]);
