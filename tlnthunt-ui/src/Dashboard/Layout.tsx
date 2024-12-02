@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import { Outlet } from "react-router-dom";
 
-const Dashboard = () => {
+const Layout = () => {
   return (
     <div className="flex w-full flex-col dark:bg-black">
       <Header />
@@ -12,4 +12,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Layout;
