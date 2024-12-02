@@ -48,7 +48,6 @@ const Register = () => {
 
   const onSubmit = async (registrationRequest: RegistrationRequest) => {
     registrationRequest.role = Role.Freelancer;
-    console.log(registrationRequest);
     await auth.register(registrationRequest).then(
       () => navigate("/activate"),
       (error) => console.error(error)
